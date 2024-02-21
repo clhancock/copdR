@@ -2,8 +2,6 @@
 #'
 #'
 #' @return A character vector listing all the names of .mat files.
-#' @examples
-#' backslip_names <- list.mat()
 #' @export
 #'
 
@@ -34,8 +32,6 @@ list.mat <- function(){
 #'   the .mat files. Name should be in quotations, i.e. "folder_name".
 #' @param bs_names A vector with the names of the backslip files.
 #' @return A list of three matrices including lateral, vertical and total offset.
-#' @examples
-#' backslip_list <- matrix.mat(all_offsets, backslip_vector)
 #' @export
 #'
 #'
@@ -50,7 +46,7 @@ matrix.mat <- function(folder_name, bs_names){
      lateral = dplyr::bind_cols(h_x, h_y)
      colnames(lateral) = suppressMessages(c("h_x","h_y"))
 
-     z_x = t(stats::na.omit(bs.init$XCORDATAV))
+     z_x = t(stats::na.omit(bs.init$XCORDATAV))[,1]
      z_y = t(stats::na.omit(bs.init$XCOR.SUMV))
      vertical = dplyr::bind_cols(x = z_x, y = z_y)
      colnames(vertical) = suppressMessages(c("z_x","z_y"))

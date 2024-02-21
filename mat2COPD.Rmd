@@ -1,0 +1,206 @@
+---
+title: "mat2COPD"
+author: "Aubrey LaPlante"
+date: "2024-02-21"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## 1. Load in data ###
+```{r}
+## USER DEFINED INPUTS ##
+
+#create a reference vector of offset names from file names in a folder
+#after running this you will be prompted to enter the folder name
+#this does NOT need quotations around it
+backslip_names <- list.mat()
+
+folder_name = "example_mat"
+
+#See example table "example.csv" for how your reference table should be formatted
+csv_name = "example.csv"
+
+#########################
+
+
+
+
+## DO NOT EDIT ##
+#create a list containing three dataframes, including 1. lateral, 2. vertical, 3. total offset
+backslip_data <- matrix.mat(folder_name,backslip_names)
+
+#load in your reference CSV. See example table "example.csv" for how your table should be formatted
+backslip_csv <- readr::read_csv(csv_name, show_col_types = FALSE)
+
+##################
+```
+
+
+## 2. Data pre-processing
+
+2.1. Visualize raw data
+```{r}
+## DO NOT EDIT ##
+
+#prep data for plotting
+raw_lat_data <- simplify4plot(backslip_data[[1]], "lateral")
+raw_vert_data <- simplify4plot(backslip_data[[2]], "vertical")
+raw_total_data <- simplify4plot(backslip_data[[3]], "total")
+
+# plot raw data
+plotMat(raw_lat_data,"lateral")
+plotMat(raw_vert_data,"vertical")
+plotMat(raw_total_data,"total")
+
+##################
+
+```
+
+2.2 Clip raw data and plot
+```{r}
+
+## USER-DEFINED LIMITS ##
+lat_limits <- list(
+     lat_x_min = -5,
+     lat_x_max = 0,
+     lat_y_min = 0,
+     lat_y_max = 1
+)
+
+vert_limits <- list(
+     vert_x_min = -1,
+     vert_x_max = 0,
+     vert_y_min = 0,
+     vert_y_max = 1
+)
+
+total_limits <- list(
+     total_x_min = 0,
+     total_x_max = 5,
+     total_y_min = 0,
+     total_y_max = 1
+)  
+
+#######################
+
+
+
+## DO NOT EDIT ##
+
+#clip x limits of data
+backslip_data_clip <- list(
+     lat_clip = data.clip(backslip_data[[1]],"lateral",lat_limits[[1]],lat_limits[[2]]),
+     vert_clip = data.clip(backslip_data[[2]],"vertical",vert_limits[[1]],vert_limits[[2]]),
+     total_clip = data.clip(backslip_data[[3]],"total",total_limits[[1]],total_limits[[2]])
+)
+
+# plot clipped data
+plotMat(simplify4plot(backslip_data_clip[[1]], "lateral"),"lateral",
+        lat_limits[[1]],lat_limits[[2]],lat_limits[[3]],lat_limits[[4]])
+plotMat(simplify4plot(backslip_data_clip[[2]], "vertical"),"vertical",
+        vert_limits[[1]],vert_limits[[2]], vert_limits[[3]],vert_limits[[4]])
+plotMat(simplify4plot(backslip_data_clip[[3]], "total"),"total",
+        total_limits[[1]],total_limits[[2]],total_limits[[3]],total_limits[[4]])
+
+
+##################
+```
+
+2.3 Confidence Scaling
+```{r}
+## USER DEFINED INPUT ##
+
+#column of csv table corresponding to confidence values
+confidence_column = 12
+N_observations = 205
+
+########################
+
+
+
+
+## DO NOT EDIT ##
+
+#scale the data by confidence values and put in a new list
+backslip_data_Cscale <- backslip_data
+for(i in 1:3){
+     backslip_data_Cscale[[i]] <- conf.scale(backslip_data[[i]],backslip_csv, confidence_column, N_observations)
+}
+
+
+# plot confidence-scaled data
+plotMat(simplify4plot(backslip_data_Cscale[[1]], "lateral"),"lateral",
+        lat_limits[[1]],lat_limits[[2]],lat_limits[[3]],lat_limits[[4]])
+plotMat(simplify4plot(backslip_data_Cscale[[2]], "vertical"),"vertical",
+        vert_limits[[1]],vert_limits[[2]], vert_limits[[3]],vert_limits[[4]])
+plotMat(simplify4plot(backslip_data_Cscale[[3]], "total"),"total",
+        total_limits[[1]],total_limits[[2]],total_limits[[3]],total_limits[[4]])
+##################
+```
+
+2.4 Standard deviation & coefficient of variation (COV) calculation
+
+```{r}
+#these are addendum columns to the CSV file
+#inputs will need to be the columns of offset data 
+
+```
+
+
+## 3. Filters ##
+
+3.1 COV filters
+```{r}
+
+```
+
+3.2 Standard deviation filters
+
+```{r}
+
+```
+
+
+3.3 Age filters
+
+```{r}
+
+```
+
+3.4 Confidence filters
+
+```{r}
+
+```
+
+
+3.5 
+
+```{r}
+
+```
+
+
+## 4. Optimization ##
+
+```{r}
+## input functions (onePeak, twoPeak, threePeak, fourPeak, etc) will NOT be user facing
+
+# optimCOPD function WILL be user facing
+
+#input parameters will need to be a table/csv
+```
+
+
+## 5. Final Plots ##
+
+```{r}
+## combining filtered data with optimization curves
+```
+
+
+

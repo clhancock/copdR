@@ -4,7 +4,7 @@
 \alias{simplify4plot}
 \title{Melt backslip data table}
 \usage{
-simplify4plot(data_table, offset_type)
+simplify4plot(data_table, offset_type = "lateral")
 }
 \arguments{
 \item{data_table}{A single table with x values as the first column and every

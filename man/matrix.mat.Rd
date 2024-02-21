@@ -19,6 +19,3 @@ A list of three matrices including lateral, vertical and total offset.
 Combine all offset data from the mat files.
 Make sure each file name starts with a maximum 4-letter/number identifier.
 }
-\examples{
-backslip_list <- matrix.mat(all_offsets, backslip_vector)
-}

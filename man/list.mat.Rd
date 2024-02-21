@@ -12,6 +12,3 @@ A character vector listing all the names of .mat files.
 \description{
 Import and organize backslip file names into a character vector.
 }
-\examples{
-backslip_names <- list.mat()
-}
