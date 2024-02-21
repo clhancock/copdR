@@ -8,14 +8,17 @@ matrix.mat(folder_name, bs_names)
 }
 \arguments{
 \item{folder_name}{A folder in your working directory that contains all
-the .mat files. Name should be in quotations, i.e. "folder_name"}
+the .mat files. Name should be in quotations, i.e. "folder_name".}
 
-\item{bs_names}{A vector with the names of the backslip files}
+\item{bs_names}{A vector with the names of the backslip files.}
 }
 \value{
 A list of three matrices including lateral, vertical and total offset.
 }
 \description{
-Combine all offset data from the mat files
-Make sure each file name starts with a maximum 4-letter/number identifier
+Combine all offset data from the mat files.
+Make sure each file name starts with a maximum 4-letter/number identifier.
+}
+\examples{
+backslip_list <- matrix.mat(all_offsets, backslip_vector)
 }

@@ -2,13 +2,16 @@
 % Please edit documentation in R/bs_import.R
 \name{list.mat}
 \alias{list.mat}
-\title{Import and organize backslip file names into a character vector}
+\title{Import and organize backslip file names into a character vector.}
 \usage{
 list.mat()
 }
 \value{
-A character vector listing all the names of .mat files
+A character vector listing all the names of .mat files.
 }
 \description{
-Import and organize backslip file names into a character vector
+Import and organize backslip file names into a character vector.
+}
+\examples{
+backslip_names <- list.mat()
 }

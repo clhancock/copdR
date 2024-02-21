@@ -14,4 +14,6 @@ Imports:
     dplyr,
     ggplot2,
     R.matlab,
-    stats
+    reshape,
+    stats,
+    utils

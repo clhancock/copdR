@@ -1,6 +1,9 @@
-#' Import and organize backslip file names into a character vector
+#' Import and organize backslip file names into a character vector.
 #'
-#' @return A character vector listing all the names of .mat files
+#'
+#' @return A character vector listing all the names of .mat files.
+#' @examples
+#' backslip_names <- list.mat()
 #' @export
 #'
 
@@ -24,18 +27,20 @@ list.mat <- function(){
 #' Combine .mat file data
 #'
 #'
-#' Combine all offset data from the mat files
-#' Make sure each file name starts with a maximum 4-letter/number identifier
-#'
+#' Combine all offset data from the mat files.
+#' Make sure each file name starts with a maximum 4-letter/number identifier.
+#' @importFrom utils setTxtProgressBar txtProgressBar
 #' @param folder_name A folder in your working directory that contains all
-#'   the .mat files. Name should be in quotations, i.e. "folder_name"
-#' @param bs_names A vector with the names of the backslip files
-#'
+#'   the .mat files. Name should be in quotations, i.e. "folder_name".
+#' @param bs_names A vector with the names of the backslip files.
 #' @return A list of three matrices including lateral, vertical and total offset.
+#' @examples
+#' backslip_list <- matrix.mat(all_offsets, backslip_vector)
 #' @export
 #'
 #'
 #'
+
 
 matrix.mat <- function(folder_name, bs_names){
      bs.init <- R.matlab::readMat(file.path(folder_name, bs_names[1]))
@@ -54,6 +59,17 @@ matrix.mat <- function(folder_name, bs_names){
      t_y = t(stats::na.omit(bs.init$XCOR.SUMT))
      total = dplyr::bind_cols(x = t_x, y = t_y)
      colnames(total) = suppressMessages(c("t_x","t_y"))
+
+     #progress bar
+
+     n_iter <- length(bs_names)-1 # Number of iterations of the loop
+
+     # Initializes the progress bar
+     pb <- utils::txtProgressBar(min = 0,      # Minimum value of the progress bar
+                          max = n_iter, # Maximum value of the progress bar
+                          style = 3,    # Progress bar style (also available style = 1 and style = 2)
+                          width = 50,   # Progress bar width. Defaults to getOption("width")
+                          char = "=")   # Character used to create the bar
 
      suppressMessages(for(i in 2:length(bs_names)){
 
@@ -78,7 +94,10 @@ matrix.mat <- function(folder_name, bs_names){
           lateral <- dplyr::left_join(lateral,h_all, by = "h_x")
           vertical <- dplyr::left_join(vertical,z_all, by = "z_x")
           total <- dplyr::left_join(total,t_all, by = "t_x")
+
+          utils::setTxtProgressBar(pb, i)
      })
+     close(pb)
      #renaming
      colnames(lateral)[2:(length(bs_names)+1)] <- substr(bs_names,1,4)
      colnames(vertical)[2:(length(bs_names)+1)] <- substr(bs_names,1,4)
