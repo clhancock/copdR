@@ -22,7 +22,7 @@
 #'
 #'
 
-filter.covREF <- function(backslip_ref,offset_ID,offset_type,COV_values,backslip_data = backslip_data){
+filter_covREF <- function(backslip_ref,offset_ID,offset_type,COV_values,backslip_data = backslip_data){
      #initalize COV_matrix reference with offset ID column
      COV_mat <- backslip_ref[offset_ID]
      backslip_ref = as.data.frame(backslip_ref)

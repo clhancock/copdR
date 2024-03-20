@@ -26,7 +26,7 @@
 #'
 
 
-filter.covDAT <- function(backslip_ref,offset_ID,offset_type,COV_values,COV_mat, backslip_data = backslip_data){
+filter_covDAT <- function(backslip_ref,offset_ID,offset_type,COV_values,COV_mat, backslip_data = backslip_data){
      #create a list to store matrices
      COV_filtDAT <- vector(mode='list', length=length(COV_values))
      names(COV_filtDAT) <- c(paste("lessthan",COV_values, sep="_"))
