@@ -10,7 +10,7 @@ conf.scale(offset_data, backslip_ref, confidence_column, N)
 \item{offset_data}{A datatable with x values as the first column and probability
 distribution functions (y values) as subsequent columns.}
 
-\item{backslip_ref}{A datatable containing confidence values.}
+\item{backslip_ref}{A reference datatable containing confidence values.}
 
 \item{confidence_column}{The column number in a 'backslip_ref' table with confidence
 values.}

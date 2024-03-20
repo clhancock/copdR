@@ -8,7 +8,7 @@
 #'
 #' @param offset_data A datatable with x values as the first column and probability
 #' distribution functions (y values) as subsequent columns.
-#' @param backslip_ref A datatable containing confidence values.
+#' @param backslip_ref A reference datatable containing confidence values.
 #' @param confidence_column The column number in a 'backslip_ref' table with confidence
 #' values.
 #' @param N The integer number of offset sites

@@ -77,8 +77,8 @@ matrix.mat <- function(folder_name, bs_names){
           h_all = dplyr::bind_cols(h_x,h_y)
           colnames(h_all) = c("h_x","h_y")
 
-          z_x = t(stats::na.omit(bs.data$XCORDATAV))[1]
-          z_y = t(stats::na.omit(bs.data$XCOR.SUMV))[2]
+          z_x = t(stats::na.omit(bs.data$XCORDATAV))[,1]
+          z_y = t(stats::na.omit(bs.data$XCOR.SUMV))
           z_all = dplyr::bind_cols(z_x,z_y)
           colnames(z_all) = c("z_x","z_y")
 
