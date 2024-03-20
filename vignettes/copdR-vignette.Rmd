@@ -1,23 +1,34 @@
 ---
-title: "mat2COPD"
-author: "Aubrey LaPlante"
-date: "2024-02-21"
-output: html_document
+title: "copdR-vignette"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{copdR-vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(copdr)
+```
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-#library(copdr)
-### mat2COPD using COPDR ###
+
+### using COPDR ###
 # This code is meant to import probability distribution functions (PDFs), i.e. Gaussian curves,
 # and combine them in a modicum of ways for the user, based on several filters to take out the noisy PDFs 
 # or PDFs with high uncertainties (i.e. large standard deviations, high coefficient of variation, etc).
 # These PDFs are produced from LaDiCaoz, a Matlab program that allows you to 'backslip' offset on a fault
 # from digital elevation models (DEMs) or digital surface models (DSMs)
 
-
-library(devtools)
-load_all()
 ```
 
 
@@ -273,6 +284,4 @@ MORPH_filter_vals <- c("bar", "swale","fan")
 ## combining filtered data with optimization curves
 ## analyzing trends and producing final graphs
 ```
-
-
 

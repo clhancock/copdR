@@ -19,3 +19,7 @@ Imports:
     stats,
     tidyselect,
     utils
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
