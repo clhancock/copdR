@@ -6,7 +6,17 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of copdr is to …
+The goal of copdr is to produce a model that identifies peaks within a
+dataset that correspond to earthquake displacement magnitudes. This code
+has several functions to streamline the import and summation of
+probability distribution functions (PDFs), i.e. Gaussian curves,
+produced from ‘LaDiCaoz’. LaDiCaoz is a Matlab program that allows you
+to ‘backslip’ offset on a fault identified from aerial imagery such as
+digital elevation models (DEMs) or digital surface models (DSMs). The
+goals of ‘copdr’ are to visualize the combined PDF dataset as a
+cumulative offset probability distribution (COPD) function, and filter
+out the PDFs that have high uncertainties (i.e. large standard
+deviations, high coefficient of variation, etc).
 
 ## Installation
 
@@ -17,36 +27,3 @@ You can install the development version of copdr from
 # install.packages("devtools")
 devtools::install_github("AubreyLaPlante/copdr")
 ```
-
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-``` r
-library(copdr)
-## basic example code
-```
-
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
-
-``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
-```
-
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
