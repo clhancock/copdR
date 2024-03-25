@@ -19,7 +19,6 @@ list.mat <- function(){
 }
 
 
-
 #' Combine .mat file data
 #'
 #'

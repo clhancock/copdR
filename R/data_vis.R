@@ -131,3 +131,49 @@ plotMat <- function(data_table, offset_type, xmin = -10, xmax = 10, ymin = -1, y
      return(plot)
 }
 
+
+#' Plot summed PDFs
+#'
+#'
+#' Plot summed PDFs contained in a datatable.
+#'
+#' @importFrom ggplot2 ggplot aes stat_align xlim ylim labs
+#' @param data_table A single table with "h_x", "z_x" or "t_x" values as the first column
+#' and a 'y' column of summed PDF values
+#' @param offset_type Input can be "lateral", "vertical" or "total". Any other input
+#' will result in an error. Also make sure your input offset type corresponds to the
+#' correct datatable.
+#' @param xmin The minimum x value. Values can be negative or positive but must be less than xmax.
+#' @param xmax The maximum x value. Values can be negative or positive but must be greater than xmin.
+#' @return A plot produced by ggplot
+#' @export
+#'
+#'
+#'
+
+
+plotMatSum <- function(data_table, offset_type, xmin = -10, xmax = 10){
+     if(offset_type == "lateral"){
+          plot <- ggplot2::ggplot(mapping = aes(x= data_table$h_x,
+                                                y= data_table$y))+
+               stat_align()+
+               xlim(xmin,xmax)+
+               labs(title = "Lateral Displacement")
+     }
+     if(offset_type == "vertical"){
+          plot <- ggplot2::ggplot(mapping = aes(x=data_table$z_x,
+                                                y = data_table$y))+
+               stat_align()+
+               xlim(xmin,xmax)+
+               labs(title = "Vertical Displacement")
+
+     }
+     if(offset_type == "total"){
+          plot <- ggplot2::ggplot(mapping = aes(x=data_table$t_x,
+                                                y = data_table$y))+
+               stat_align()+
+               xlim(xmin,xmax)+
+               labs(title = "Total Displacement")
+     }
+     return(plot)
+}

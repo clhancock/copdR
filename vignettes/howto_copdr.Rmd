@@ -40,10 +40,11 @@ The first part of the code does the following:
 ## the code is having trouble loading in raw data because it cannot find the right folder
 
 #I have tried both path_package and system.file and they can't find the folder
-setwd(fs::path_package("data-raw", package = "copdr"))
+#dataDir <- system.file("extdata", package = "copdr")
+#copFiles <- list.mat(dataDir)
 
-setwd(system.file("data-raw",package = "copdr"))
-
+setwd(system.file("extdata",package = "copdr"))
+#setwd(fs::path_package("extdata", package = "copdr"))
 
 # list.mat() takes the folder ' example_mat '  in your working directory and lists all the file names with the file format '.mat'
 backslip_names <- list.mat()
@@ -53,17 +54,17 @@ csv_name = "example.csv"
 ```
 
 ```{r}
-## DO NOT EDIT ##
-
-#all things I have tried
+#all things I have tried########
 #setwd(fs::path_package("data-raw", package = "copdr"))
 #test<- readRDS(system.file("data/", "backslip_data.rda", package = "copdr", mustWork = TRUE))
 #test<- readRDS(fs::path_package("data/", "backslip_data.rda", package = "copdr"))
 #setwd(system.file("data/",package = "copdr"))
 #filefind <- file.choose("backslip_data")
 #backslip_data <- readRDS(filefind)
+#setwd(fs::path_package("extdata", package = "copdr"))
+#############
 
-›
+setwd(system.file("extdata",package = "copdr"))
 #create a list containing three dataframes, including 1. lateral, 2. vertical, 3. total offset
 backslip_data <- matrix.mat(folder_name,backslip_names)
 
@@ -78,6 +79,8 @@ backslip_csv <- readr::read_csv(csv_name, show_col_types = FALSE)
 ## 2. Data pre-processing
 
 2.1. Visualize raw data
+
+This code plots your data on a default coordinate axis, to check that the data loaded in right.
 ```{r}
 ## DO NOT EDIT ##
 
@@ -96,6 +99,8 @@ plotMat(raw_total_data,"total")
 ```
 
 2.2 Clip raw data and plot
+
+Use the graphs from 2.1 to clip your dataset.
 ```{r}
 
 ## USER-DEFINED LIMITS ##
@@ -146,13 +151,13 @@ plotMat(simplify4plot(backslip_data_clip[[3]], "total"),"total",
 ```
 
 2.3 Confidence Scaling
+
+This code scales each PDF by a confidence value. These confidence values are specific to the dataset, where 1 is the maximum confidence and your largest value is the lowest confidence. In this dataset, 3 is the lowest confidence. The code is set up to accommodate any confidence scale (1 to 3, 1 to 5, 1 to 10, etc). If your confidence values are flipped in the reference metadata, such that 1 is the lowest confidence value, you will need to invert the values in your metadata.
 ```{r}
 ## USER DEFINED INPUT ##
-
 #column of csv table corresponding to confidence values
 confidence_column = 9
 N_observations = 205
-
 ########################
 
 
@@ -163,9 +168,8 @@ N_observations = 205
 #scale the data by confidence values and put in a new list
 backslip_data_Cscale <- backslip_data
 for(i in 1:3){
-     backslip_data_Cscale[[i]] <- conf.scale(backslip_data[[i]],backslip_csv, confidence_column, N_observations)
+     backslip_data_Cscale[[i]] <- conf.scale(backslip_data_clip[[i]],backslip_csv, confidence_column, N_observations)
 }
-
 
 # plot confidence-scaled data
 plotMat(simplify4plot(backslip_data_Cscale[[1]], "lateral"),"lateral",
@@ -179,7 +183,6 @@ plotMat(simplify4plot(backslip_data_Cscale[[3]], "total"),"total",
 
 2.4 Coefficient of variation (COV) calculation
 
-```{r}
 #the master reference CSV "backslip_csv" should have 4-6 columns for displacement statistics
 # 1. lateral mean, 2. lateral standard deviation, 3. vertical mean, 4. vertical standard deviation,
 # 5. total mean, 6. total standard devation
@@ -191,6 +194,9 @@ plotMat(simplify4plot(backslip_data_Cscale[[3]], "total"),"total",
 #which is the standard deviation divided by the mean
 #I used lateral in my example because in the example data,
 #vertical displacement is poorly resolved and small magnitude
+
+```{r}
+
 
 ## USER DEFINED INPUT ##
 # these are the column numbers corresponding to this data in the reference csv
@@ -232,23 +238,20 @@ COV_filter_vals <- seq(.10,.30, by=0.05)
 
 ## DO NOT EDIT ##
 # this creates reference data files for the offset_IDs and the corresponding COV values
-lat_cov <- filter.covREF(backslip_csv,1,"lateral",COV_filter_vals)
-vert_cov <- filter.covREF(backslip_csv,1,"vertical",COV_filter_vals)
-total_cov <- filter.covREF(backslip_csv,1,"total",COV_filter_vals)
+lat_covREF <- filter_covREF(backslip_csv,1,"lateral",COV_filter_vals)
+vert_covREF <- filter_covREF(backslip_csv,1,"vertical",COV_filter_vals)
+total_covREF <- filter_covREF(backslip_csv,1,"total",COV_filter_vals)
 
 ### this filters the input datatable 'backslip_data' by the filtered COV reference files created using filter.covREF
-lat_cov2 <- filter.covDAT(backslip_csv,1,"lateral",COV_filter_vals,lat_cov,backslip_data_Cscale)
-vert_cov2 <- filter.covDAT(backslip_csv,1,"vertical",COV_filter_vals,vert_cov,backslip_data_Cscale)
-total_cov2 <- filter.covDAT(backslip_csv,1,"total",COV_filter_vals,total_cov,backslip_data_Cscale)
+lat_cov2 <- filter_covDAT(backslip_csv,1,"lateral",COV_filter_vals,lat_covREF,backslip_data_Cscale)
+vert_cov2 <- filter_covDAT(backslip_csv,1,"vertical",COV_filter_vals,vert_covREF,backslip_data_Cscale)
+total_cov2 <- filter_covDAT(backslip_csv,1,"total",COV_filter_vals,total_covREF,backslip_data_Cscale)
 ########################
 
 # plot confidence-scaled data
-plotMat(simplify4plot(lat_cov2[[5]], "lateral"),"lateral",
-        lat_limits[[1]],lat_limits[[2]],lat_limits[[3]],lat_limits[[4]])
-plotMat(simplify4plot(vert_cov2[[5]], "vertical"),"vertical",
-        vert_limits[[1]],vert_limits[[2]], vert_limits[[3]],vert_limits[[4]])
-plotMat(simplify4plot(total_cov2[[5]], "total"),"total",
-        total_limits[[1]],total_limits[[2]],total_limits[[3]],total_limits[[4]])
+plotMatSum(lat_cov2[[5]] ,"lateral", lat_limits[[1]], lat_limits[[2]])
+plotMatSum(vert_cov2[[5]] ,"vertical", vert_limits[[1]],vert_limits[[2]])
+plotMatSum(total_cov2[[5]] ,"total", total_limits[[1]],total_limits[[2]])
 ##################
 ```
 
