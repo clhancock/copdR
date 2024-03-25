@@ -38,9 +38,14 @@ The first part of the code does the following:
 ```{r}
 
 ## the code is having trouble loading in raw data because it cannot find the right folder
-# I commented the list.mat() out because the RMD won't knit
-setwd(fs::path_package("data-raw/", package = "copdr"))
-#setwd(system.file("data-raw",package = "copdr"))
+
+#I have tried both path_package and system.file and they can't find the folder
+setwd(fs::path_package("data-raw", package = "copdr"))
+
+setwd(system.file("data-raw",package = "copdr"))
+
+
+# list.mat() takes the folder ' example_mat '  in your working directory and lists all the file names with the file format '.mat'
 backslip_names <- list.mat()
 folder_name = "example_mat"
 csv_name = "example.csv"
@@ -50,7 +55,7 @@ csv_name = "example.csv"
 ```{r}
 ## DO NOT EDIT ##
 
-
+#all things I have tried
 #setwd(fs::path_package("data-raw", package = "copdr"))
 #test<- readRDS(system.file("data/", "backslip_data.rda", package = "copdr", mustWork = TRUE))
 #test<- readRDS(fs::path_package("data/", "backslip_data.rda", package = "copdr"))
@@ -58,8 +63,8 @@ csv_name = "example.csv"
 #filefind <- file.choose("backslip_data")
 #backslip_data <- readRDS(filefind)
 
+›
 #create a list containing three dataframes, including 1. lateral, 2. vertical, 3. total offset
-backslip_names <- bs.names
 backslip_data <- matrix.mat(folder_name,backslip_names)
 
 #load in your reference CSV. See example table "example.csv" for how your table should be formatted
