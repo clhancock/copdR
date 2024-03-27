@@ -12,7 +12,6 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-knitr::opts_knit$set(root.dir = '/tmp')
 ```
 
 ```{r setup}
@@ -20,7 +19,7 @@ library(copdr)
 ```
 
 
-# Introduction to Cumulative Offset Probability Distribution in R (copdR)
+# Introduction to Cumulative Offset Probability Distribution in R (copdr)
 
 This code is meant to import probability distribution functions (PDFs), i.e. Gaussian curves, and combine them in a modicum of ways for the user, based on several filters to take out the noisy PDFs or PDFs with high uncertainties (i.e. large standard deviations, high coefficient of variation, etc). These PDFs are produced from LaDiCaoz, a Matlab program that allows you to 'backslip' offset on a fault from digital elevation models (DEMs) or digital surface models (DSMs). It is a lot of acronyms, I know. I will simplify this description in a future version.
 
@@ -36,40 +35,21 @@ The first part of the code does the following:
 
 ## User-defined inputs ##
 ```{r}
-
-## the code is having trouble loading in raw data because it cannot find the right folder
-
-#I have tried both path_package and system.file and they can't find the folder
-#dataDir <- system.file("extdata", package = "copdr")
-#copFiles <- list.mat(dataDir)
-
-setwd(system.file("extdata",package = "copdr"))
-#setwd(fs::path_package("extdata", package = "copdr"))
-
-# list.mat() takes the folder ' example_mat '  in your working directory and lists all the file names with the file format '.mat'
-backslip_names <- list.mat()
+#First, set the directory where all your data exist.
+directory <- system.file("extdata", package = "copdr")
 folder_name = "example_mat"
 csv_name = "example.csv"
-
 ```
 
 ```{r}
-#all things I have tried########
-#setwd(fs::path_package("data-raw", package = "copdr"))
-#test<- readRDS(system.file("data/", "backslip_data.rda", package = "copdr", mustWork = TRUE))
-#test<- readRDS(fs::path_package("data/", "backslip_data.rda", package = "copdr"))
-#setwd(system.file("data/",package = "copdr"))
-#filefind <- file.choose("backslip_data")
-#backslip_data <- readRDS(filefind)
-#setwd(fs::path_package("extdata", package = "copdr"))
-#############
+# list.mat() takes the folder ' example_mat '  in a directory and lists all the file names with the file format '.mat'
+backslip_names <- list.mat(directory, folder_name)
 
-setwd(system.file("extdata",package = "copdr"))
 #create a list containing three dataframes, including 1. lateral, 2. vertical, 3. total offset
-backslip_data <- matrix.mat(folder_name,backslip_names)
+backslip_data <- matrix.mat(directory,folder_name,backslip_names)
 
 #load in your reference CSV. See example table "example.csv" for how your table should be formatted
-backslip_csv <- readr::read_csv(csv_name, show_col_types = FALSE)
+backslip_csv <- readr::read_csv(file.path(directory,csv_name), show_col_types = FALSE)
 
 ##################
 ```

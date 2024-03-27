@@ -1,18 +1,20 @@
 #' Import and organize backslip file names into a character vector.
 #'
-#'
+#' @param dataDir The path to the directory containing a folder of .mat files.
+#' @param dFolder The name of the folder containing the .mat files
 #' @return A character vector listing all the names of .mat files.
 #' @export
 #'
 
 
-list.mat <- function(){
+list.mat <- function(dataDir,dFolder){
      #generate a vector of all backslip data names
-     path <- as.character(readline(prompt = "Enter backslip folder name:   "))
-     bs.names <- list.files(path = paste0(getwd(),"/",path), pattern = ".mat")
+     #path <- as.character(readline(prompt = "Enter backslip folder name:   "))
+     #bs.names <- list.files(path = paste0(getwd(),"/",path), pattern = ".mat")
+     bs.names <- list.files(path = file.path(dataDir,folder_name), pattern = ".mat")
 
-     if(length(list.files(path = paste0(getwd(),"/",path), pattern = ".mat")) == 0){
-          stop("ERROR: Folder not found. Check that the folder is in your working drive, and that the folder name is spelled correctly.")
+     if(length(list.files(path = dataDir, pattern = ".mat")) == 0){
+          stop("ERROR: Folder not found. Check that the folder is in your working directory, and that the folder name is spelled correctly.")
      }else{
           return(bs.names)
      }
@@ -25,6 +27,7 @@ list.mat <- function(){
 #' Combine all offset data from the mat files.
 #' Make sure each file name starts with a maximum 4-letter/number identifier.
 #' @importFrom utils setTxtProgressBar txtProgressBar
+#' @param dataDir The path to the directory containing a folder of .mat files.
 #' @param folder_name A folder in your working directory that contains all
 #'   the .mat files. Name should be in quotations, i.e. "folder_name".
 #' @param bs_names A vector with the names of the backslip files.
@@ -35,8 +38,8 @@ list.mat <- function(){
 #'
 
 
-matrix.mat <- function(folder_name, bs_names){
-     bs.init <- R.matlab::readMat(file.path(folder_name, bs_names[1]))
+matrix.mat <- function(dataDir, folder_name, bs_names){
+     bs.init <- R.matlab::readMat(file.path(dataDir, folder_name, bs_names[1]))
      #initialize a matrix from the first .mat data
      h_x = t(stats::na.omit(bs.init$XCORDATAH))
      h_y = t(stats::na.omit(bs.init$XCOR.SUMH))
@@ -66,7 +69,7 @@ matrix.mat <- function(folder_name, bs_names){
 
      suppressMessages(for(i in 2:length(bs_names)){
 
-          pathname <- file.path(folder_name, bs_names[i])
+          pathname <- file.path(dataDir, folder_name, bs_names[i])
           bs.data <- R.matlab::readMat(pathname)
 
           h_x = t(stats::na.omit(bs.data$XCORDATAH))

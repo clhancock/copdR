@@ -4,9 +4,11 @@
 \alias{matrix.mat}
 \title{Combine .mat file data}
 \usage{
-matrix.mat(folder_name, bs_names)
+matrix.mat(dataDir, folder_name, bs_names)
 }
 \arguments{
+\item{dataDir}{The path to the directory containing a folder of .mat files.}
+
 \item{folder_name}{A folder in your working directory that contains all
 the .mat files. Name should be in quotations, i.e. "folder_name".}
 
