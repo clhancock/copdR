@@ -14,16 +14,17 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(copdr)
+```{r setup, results='hide'}
+#library(copdr)
+devtools::load_all()
 ```
 
 
 # Introduction to Cumulative Offset Probability Distribution in R (copdr)
 
-This code is meant to import probability distribution functions (PDFs), i.e. Gaussian curves, and combine them in a modicum of ways for the user, based on several filters to take out the noisy PDFs or PDFs with high uncertainties (i.e. large standard deviations, high coefficient of variation, etc). These PDFs are produced from LaDiCaoz, a Matlab program that allows you to 'backslip' offset on a fault from digital elevation models (DEMs) or digital surface models (DSMs). It is a lot of acronyms, I know. I will simplify this description in a future version.
+This code is meant to import probability distribution functions (PDFs), i.e. Gaussian curves, and combine them in a modicum of ways for the user, based on several filters to take out the noisy PDFs or PDFs with high uncertainties (i.e. large standard deviations, high coefficient of variation, etc). These PDFs are produced from LaDiCaoz, a Matlab program that allows you to 'backslip' offset on a fault from digital elevation models (DEMs) or digital surface models (DSMs). It is a lot of acronyms, I know. I will simplify this description in a future version. 
 
-
+#CH I don't think this overly complicated. Maybe you could references to some articles that use the method? Or provide a link to the matlab program documentation? You could also provide some background to the "why" you wanted this package. Is it just for plotting these results? Why is using R better than matlab?
 
 # 1. Load in data
 
@@ -36,13 +37,14 @@ The first part of the code does the following:
 ## User-defined inputs ##
 ```{r}
 #First, set the directory where all your data exist.
-directory <- system.file("extdata", package = "copdr")
-folder_name = "example_mat"
-csv_name = "example.csv"
+directory <- system.file("extdata", package = "copdr") #CHWhy not have a data folder?
+folder_name <- "example_mat"
+csv_name    <- "example.csv"
 ```
 
-```{r}
-# list.mat() takes the folder ' example_mat '  in a directory and lists all the file names with the file format '.mat'
+#CH use hide to tidy up the vignette
+```{r,results='hide',cache=TRUE}
+# list.mat() takes the folder ' example_mat ' in a directory and lists all the file names with the file format '.mat'
 backslip_names <- list.mat(directory, folder_name)
 
 #create a list containing three dataframes, including 1. lateral, 2. vertical, 3. total offset
@@ -50,38 +52,37 @@ backslip_data <- matrix.mat(directory,folder_name,backslip_names)
 
 #load in your reference CSV. See example table "example.csv" for how your table should be formatted
 backslip_csv <- readr::read_csv(file.path(directory,csv_name), show_col_types = FALSE)
+```
 
-##################
+```{r}
+print(head(backslip_names))
+print(head(backslip_csv))
 ```
 
 
 
-## 2. Data pre-processing
+# 2. Data pre-processing
 
-2.1. Visualize raw data
+## 2.1. Visualize raw data
 
 This code plots your data on a default coordinate axis, to check that the data loaded in right.
-```{r}
+```{r,message=FALSE,fig.width=6.5}
 ## DO NOT EDIT ##
-
 #prep data for plotting
-raw_lat_data <- simplify4plot(backslip_data[[1]], "lateral")
+raw_lat_data <- simplify4plot(backslip_data[[1]], "lateral") #CH what do the column names mean?
 raw_vert_data <- simplify4plot(backslip_data[[2]], "vertical")
 raw_total_data <- simplify4plot(backslip_data[[3]], "total")
 
 # plot raw data
-plotMat(raw_lat_data,"lateral")
-plotMat(raw_vert_data,"vertical")
-plotMat(raw_total_data,"total")
-
-##################
-
+plotMatRevise(raw_lat_data,"lateral")
+plotMatRevise(raw_vert_data,"vertical")
+plotMatRevise(raw_total_data,"total")
 ```
 
-2.2 Clip raw data and plot
+## 2.2 Clip raw data and plot
 
 Use the graphs from 2.1 to clip your dataset.
-```{r}
+```{r,message=FALSE,fig.width=6.5}
 
 ## USER-DEFINED LIMITS ##
 lat_limits <- list(
@@ -107,8 +108,6 @@ total_limits <- list(
 
 #######################
 
-
-
 ## DO NOT EDIT ##
 
 #clip x limits of data
@@ -125,12 +124,9 @@ plotMat(simplify4plot(backslip_data_clip[[2]], "vertical"),"vertical",
         vert_limits[[1]],vert_limits[[2]], vert_limits[[3]],vert_limits[[4]])
 plotMat(simplify4plot(backslip_data_clip[[3]], "total"),"total",
         total_limits[[1]],total_limits[[2]],total_limits[[3]],total_limits[[4]])
-
-
-##################
 ```
 
-2.3 Confidence Scaling
+## 2.3 Confidence Scaling
 
 This code scales each PDF by a confidence value. These confidence values are specific to the dataset, where 1 is the maximum confidence and your largest value is the lowest confidence. In this dataset, 3 is the lowest confidence. The code is set up to accommodate any confidence scale (1 to 3, 1 to 5, 1 to 10, etc). If your confidence values are flipped in the reference metadata, such that 1 is the lowest confidence value, you will need to invert the values in your metadata.
 ```{r}
@@ -161,7 +157,7 @@ plotMat(simplify4plot(backslip_data_Cscale[[3]], "total"),"total",
 ##################
 ```
 
-2.4 Coefficient of variation (COV) calculation
+## 2.4 Coefficient of variation (COV) calculation
 
 #the master reference CSV "backslip_csv" should have 4-6 columns for displacement statistics
 # 1. lateral mean, 2. lateral standard deviation, 3. vertical mean, 4. vertical standard deviation,
@@ -200,14 +196,13 @@ backslip_csv <- calc.cov(backslip_csv,"total",total_mean, total_stdev)
 ```
 
 
-## 3. Filters ##
+# 3. Filters 
 
-# these filters will work to clip master data matrices to include only file names
-# that meet a set of criteria
-# users will define these criteria and the code will filter through the CSV and data matrices to remove
-# PDFs that do not fit these criteria
+- these filters will work to clip master data matrices to include only file names that meet a set of criteria
+- users will define these criteria and the code will filter through the CSV and data matrices to remove
+- PDFs that do not fit these criteria
 
-# Each filter will essentially clip the data and produce an output of PDFs that can be plotted, which can then be fed into any of the other filters
+- Each filter will essentially clip the data and produce an output of PDFs that can be plotted, which can then be fed into any of the other filters
 
 3.1 COV filters
 ```{r}

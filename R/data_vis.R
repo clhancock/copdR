@@ -20,13 +20,11 @@ simplify4plot <- function(data_table, offset_type = "lateral"){
           data <- as.data.frame(data_table)
           data_melt <- reshape::melt.data.frame(data, id.vars = "h_x", variable.name = "backslip_ID", value.name = "lateral")
 
-     }
-     if(offset_type == "vertical"){
+     }else if(offset_type == "vertical"){
           data <- as.data.frame(data_table)
           data_melt <- reshape::melt.data.frame(data, id.vars = "z_x", variable.name = "backslip_ID", value.name = "vertical")
 
-     }
-     if(offset_type == "total"){
+     } else if(offset_type == "total"){
           data <- as.data.frame(data_table)
           data_melt <- reshape::melt.data.frame(data, id.vars = "t_x", variable.name = "backslip_ID", value.name = "total")
 
@@ -111,8 +109,8 @@ plotMat <- function(data_table, offset_type, xmin = -10, xmax = 10, ymin = -1, y
      }
      if(offset_type == "vertical"){
           plot <- ggplot2::ggplot(mapping = aes(x=data_table$z_x,
-                                                y = data_table$value,
-                                                level = factor(data_table$variable)))+
+                                      y = data_table$value,
+                                      level = factor(data_table$variable)))+
                stat_align()+
                xlim(xmin,xmax)+
                ylim(ymin,ymax)+
@@ -131,6 +129,34 @@ plotMat <- function(data_table, offset_type, xmin = -10, xmax = 10, ymin = -1, y
      return(plot)
 }
 
+plotMatRevise <- function(data_table, offset_type, xmin = NA, xmax = NA, ymin = NA, ymax = NA){
+     if(ncol(data_table)<3 | !("variable" %in% names(data_table)) | !("value" %in% names(data_table))){
+          stop("ERROR: data_table shape not recognized. Must have at least 3 columns which include value and variable")
+     }
+     #Id correct x value for plotting
+     if(tolower(offset_type) == "lateral"){
+          xvar <- 'h_x'
+     } else if (tolower(offset_type) == "vertical"){
+          xvar <- 'z_x'
+     } else if (tolower(offset_type) == "total"){
+          xvar <- 't_x'
+     } else{
+          stop('ERROR: offset_type is not recognized. This value must be one of lateral, vertical, or total')
+     }
+     #Check to make sure everything looks good
+     if(!(xvar %in% names(data_table))){stop(paste("data_table must have column ",xvar," if offset_type =",offset_type))}
+     #Plot
+     title <- paste0(toupper(substr(offset_type,1,1)),tolower(substr(offset_type,2,nchar(offset_type))),' Displacement')
+     plot <- ggplot2::ggplot(mapping = aes(x = data_table[[xvar]],
+                                           y = data_table$value,
+                                           level = factor(data_table$variable)))+
+               stat_align()+
+               labs(title = title,x=xvar,y='what is value? what is level?')
+     #Adjust range of plot
+     if(!is.na(xmin) & !is.na(xmax)){plot <- plot + xlim(xmin,xmax)}
+     if(!is.na(ymin) & !is.na(ymax)){plot <- plot + ylim(ymin,ymax)}
+     return(plot)
+}
 
 #' Plot summed PDFs
 #'
